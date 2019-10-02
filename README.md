@@ -10,6 +10,6 @@
 ● ここで、ポーカーのプログラムは「/home/migly/poker/migly」という名前のディレクトリの中に入っているとします。  
 `cp /home/migly/poker/migly .` //自分のポーカーのプログラムを、submit_pokerの中にコピーする。もちろんマウスでコピーアンドペーストでも可。  
 `git add migly/`  
-`git commit -m "\[add\]miglyのポーカープログラム追加"`  
+`git commit -m "[add]miglyのポーカープログラム追加"`  
 `git push origin master`  
 
