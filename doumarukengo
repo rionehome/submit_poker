@@ -1,0 +1,172 @@
+from random import choice
+num = input("何人参加しますか:")
+num = int(num)
+card_list = list(range(1,53))
+copy_list = []
+print("******************************")
+count = 0
+count_list = [1,2,3,4,5]
+while count < num :
+    selected_list = []
+    for i in count_list :
+        selected_card = choice(card_list)
+        selected_list.append(selected_card)
+        card_list.remove(selected_card)
+
+    print(selected_list)
+    
+    for identity in selected_list :
+        id = selected_list.index(identity) + 1
+        if 0 < identity <= 13 :
+            mark = "♦︎"
+        elif 13 < identity <= 26 :
+            mark = "♠️"
+        elif 26 < identity <= 39 :
+            mark = "♣️"
+        elif 39 < identity <= 52 :
+            mark = "❤︎"
+        if identity % 13 != 0 :
+            nums = identity % 13
+            number = nums
+        else :
+            number = 13
+        print("{0}:{1}_{2}".format(id,mark,number))
+    count += 1
+    copy = selected_list.copy()
+    copy_list.append(copy)
+
+    print("******************************")
+    #カード配り終えた
+while True :
+    stop_frag = False
+    for exchanger in range(1,num + 1) :
+        print("{}人目のプレイヤー".format(exchanger))
+        print("******************************")
+        print(copy_list[exchanger - 1])
+        count = 0
+        for identity in copy_list[exchanger - 1] :
+            count += 1
+            if 0 < identity <= 13 :
+                mark = "♦︎"
+            elif 13 < identity <= 26 :
+                mark = "♠️"
+            elif 26 < identity <= 39 :
+                mark = "♣️"
+            elif 39 < identity <= 52 :
+                mark = "❤︎"
+            if identity % 13 != 0 :
+                nums = identity % 13
+                number = nums
+            else :
+                number = 13
+            print("{0}:{1}_{2}".format(count,mark,number))
+        print("******************************")
+        while True :
+            exchange = input("カードを交換しますか:(y / n):")
+            if exchange == "n" :
+                stop_frag = True
+                break
+            elif exchange == "y" :
+                exchanged = input("どれを入れ替えますか:")
+                exchanged = exchanged.replace(" ","")
+                split_list = exchanged.split(",")
+                #exchanged = int(exchanged)
+                for l in split_list :
+                    l = int(l)
+                    del copy_list[exchanger - 1][l - 1]
+                    selected_card_2 = choice(card_list)
+                    #copy_list[exchanger - 1].append(selected_card_2)
+                    copy_list[exchanger - 1].insert(l - 1, selected_card_2)
+                print("******************************")
+                print(copy_list[exchanger - 1])
+                count = 0
+                for identity in copy_list[exchanger - 1] :
+                    count += 1
+                    if 0 < identity <= 13 :
+                        mark = "♦︎"
+                    elif 13 < identity <= 26 :
+                        mark = "♠️"
+                    elif 26 < identity <= 39 :
+                        mark = "♣️"
+                    elif 39 < identity <= 52 :
+                        mark = "❤︎"
+                    if identity % 13 != 0 :
+                        nums = identity % 13
+                        number = nums
+                    else :
+                        number = 13
+                    print("{0}:{1}_{2}".format(count,mark,number))
+                print("******************************")    
+                break
+            else :
+                print("y　か　n　を押してください")
+                continue
+    if stop_frag :
+        break
+    #カード確定、判定に入る
+result = list(range(num))
+result_2 = list(range(num))
+
+point_list = []
+for exchanger in range(num) :
+    two_card_count = 0
+    three_card_count = 0
+    four_card_count = 0
+    point = 0
+    result[exchanger] = [numbers % 13 for numbers in copy_list[exchanger]]
+    for target in result[exchanger] :
+        result_2[exchanger] = result[exchanger].copy()
+        while target in result_2[exchanger] :
+            result_2[exchanger].remove(target)
+        if len(result_2[exchanger]) == 3 :
+            point += 1
+            two_card_count += 1
+        elif len(result_2[exchanger]) == 2 :
+            point += 1
+            three_card_count += 1
+        elif len(result_2[exchanger]) == 1 :
+            point += 1
+            four_card_count += 1
+        else :
+            point += 0
+    print("******************************")
+    if two_card_count == 2 and three_card_count == 3 :
+        print("{}人目 :ワンペア　+2\n    スリーカード　+3".format(exchanger))
+        print("合計ポイント{}".format(point))
+        point_list.append(point)
+    elif two_card_count == 4 :
+        print("{}人目 :ツーペア　+4".format(exchanger + 1))
+        print("合計ポイント{}".format(point))
+        point_list.append(point)
+    elif two_card_count == 2 :
+        print("{}人目 :ワンペア　+2".format(exchanger + 1))
+        print("合計ポイント{}".format(point))
+        point_list.append(point)
+    elif three_card_count == 3 :
+        print("{}人目 :スリーカード　+3".format(exchanger + 1))
+        print("合計ポイント{}".format(point))
+        point_list.append(point)
+    elif four_card_count == 4 :
+        print("{}人目 :フォーカード　+5".format(exchanger + 1))
+        point += 1
+        print("合計ポイント{}".format(point))
+        point_list.append(point)
+    else :
+        print("{}人目 :None".format(exchanger + 1))
+        print("合計ポイント0")
+        point_list.append(point)
+print("******************************")
+print(point_list)
+outcome = input("結果を表示しますか？(y / n):")
+if outcome == "n" :
+    print("終了しました")
+if outcome == "y" :
+    winner_point = max(point_list)
+    winner_count = point_list.count(winner_point)
+    if winner_count >= 2 :
+        print("引き分けです")
+    else :
+        winner = point_list.index(winner_point)
+        print("{}人目の人が勝利しました".format(winner +1))   
+else :
+    print("終了しました")
